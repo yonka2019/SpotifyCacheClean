@@ -45,6 +45,7 @@ namespace SpotifyCacheClean
                 Process.Start(SPOTIFY_PROCESS_NAME + ".exe");
                 WriteLog("Spotify started");
 
+                WriteLog("! DO NOT CLOSE THIS WINDOW TILL PROCESS FINISHED !");
                 await Wait(WAIT_TIME_MS); // wait till spotify fully start
 
                 MoveSongs(USER_MUSIC_TEMP_PATH, USER_MUSIC_PATH); // temp -> music
@@ -68,7 +69,7 @@ namespace SpotifyCacheClean
 
             for (int i = 0; i < dotsNum; i++)
             {
-                Console.Write(".");
+                Console.Write($".");
                 await Task.Delay(100);
             }
             Console.WriteLine();
@@ -106,7 +107,7 @@ namespace SpotifyCacheClean
 
         private static void WriteLog(string info)
         {
-            Console.WriteLine($"\n[LOG] [{DateTime.Now:HH:mm:ss}] : {info}");
+            Console.WriteLine($"\n[{DateTime.Now:HH:mm:ss}] {info}");
         }
     }
 }
