@@ -7,9 +7,12 @@ namespace SpotifyCacheClean
 {
     internal class Program
     {
-        private const string SPOTIFY_CACHE_PATH = @"C:\Users\yonka\AppData\Local\Packages\SpotifyAB.SpotifyMusic_zpdnekdrzrea0\LocalState\Spotify\Users\d792kmzau1z83vie5r149injq-user\";
+        // to edit
+        private const string SPOTIFY_CACHE_PATH = @"NEED TO FILL-UP";
+        private static readonly string userMyMusicPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) + @"\"; // DEFAULT: C:\Users\Music
+
+        // not edit
         private const string SPOTIFY_PROCESS_NAME = "Spotify";
-        private static readonly string userMyMusicPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) + @"\";
         private static readonly string userMyMusicTempPath = Path.GetTempPath() + @"SpotifyLocalSongs\";
         private static bool error = false;
 
