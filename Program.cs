@@ -60,7 +60,7 @@ namespace SpotifyCacheClean
             if (!error)
                 WriteLog("-- SUCCESS -- ");
 
-            Console.WriteLine("Press any button to exit...");
+            Console.WriteLine("\nPress any button to exit...");
             Console.ReadKey();
         }
 
