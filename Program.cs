@@ -9,12 +9,12 @@ namespace SpotifyCacheClean
     {
         // to edit
         private const string SPOTIFY_CACHE_PATH = @"Fill me";
-        private static readonly string USER_MUSIC_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) + @"\"; // DEFAULT: C:\Users\Music
+        private static readonly string LOCAL_MUSIC_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) + @"\"; // DEFAULT: C:\Users\Music
 
         // not edit
         private const int WAIT_TIME_MS = 5000; // 5000 / 1000 -> 5 seconds
         private const string SPOTIFY_PROCESS_NAME = "Spotify";
-        private static readonly string USER_MUSIC_TEMP_PATH = Path.GetTempPath() + @"SpotifyLocalSongs\";
+        private static readonly string LOCAL_MUSIC_TEMP_PATH = Path.GetTempPath() + @"SpotifyLocalSongs\";
         private static bool error = false;
 
         private static async Task Main(string[] args)
@@ -27,16 +27,16 @@ namespace SpotifyCacheClean
                     WriteLog("Spotify already closed");
 
 
-                if (Directory.Exists(USER_MUSIC_TEMP_PATH))
+                if (Directory.Exists(LOCAL_MUSIC_TEMP_PATH))
                 {
-                    Directory.Delete(USER_MUSIC_TEMP_PATH, true);
-                    WriteLog("User music temp folder removed");
+                    Directory.Delete(LOCAL_MUSIC_TEMP_PATH, true);
+                    WriteLog("Temp local songs folder removed");
                 }
 
-                Directory.CreateDirectory(USER_MUSIC_TEMP_PATH);
-                WriteLog("User music temp folder created");
+                Directory.CreateDirectory(LOCAL_MUSIC_TEMP_PATH);
+                WriteLog("Temp local songs folder created");
 
-                MoveSongs(USER_MUSIC_PATH, USER_MUSIC_TEMP_PATH); // music -> temp
+                MoveSongs(LOCAL_MUSIC_PATH, LOCAL_MUSIC_TEMP_PATH); // music -> temp
                 WriteLog("Songs moved to temp folder");
 
                 File.Delete(SPOTIFY_CACHE_PATH + "local-files.bnk");
@@ -48,8 +48,8 @@ namespace SpotifyCacheClean
                 WriteLog("! DO NOT CLOSE THIS WINDOW TILL PROCESS FINISHED !");
                 await Wait(WAIT_TIME_MS); // wait till spotify fully start
 
-                MoveSongs(USER_MUSIC_TEMP_PATH, USER_MUSIC_PATH); // temp -> music
-                WriteLog("Songs restored to music folder");
+                MoveSongs(LOCAL_MUSIC_TEMP_PATH, LOCAL_MUSIC_PATH); // temp -> music
+                WriteLog("Songs restored to original local songs folder");
             }
             catch (Exception e)
             {
