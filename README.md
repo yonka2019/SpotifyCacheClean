@@ -1,5 +1,5 @@
 # SpotifyCacheClean
-Clean spotify local files cache
+Clean spotify local files cache and updates spotify local fiels data
 
 
 # Problem
@@ -14,11 +14,11 @@ If your music doesn't in 'Music' folder (C:\Users\Music\) change 'USER_MUSIC_PAT
 
 
 # How to find spotify local files cache path
-## Official version (from web)
-C:\Users\*USERNAME*\AppData\Local\Spotify\ 
+### Official version (from web)
+`C:\Users\*USERNAME*\AppData\Local\Spotify\`
 OR
-C:\Users\*USERNAME*\AppData\Roaming\Spotify\Users\username-user\
-## Microsoft Store version
-press WIN+R, search for %appdata% -> \Local\Packages\Spotify..\LocalState\Spotify\Users\username-user\
-for example: C:\Users\yonka\AppData\Local\Packages\SpotifyAB.SpotifyMusic_zpdnekdrzrea0\LocalState\Spotify\Users\d792kbzaa1z84viefr149injq-user\
+`C:\Users\*USERNAME*\AppData\Roaming\Spotify\Users\username-user\`
+### Microsoft Store version
+press WIN+R, search for %appdata% -> `\Local\Packages\Spotify..\LocalState\Spotify\Users\username-user\`
+for example: `C:\Users\yonka\AppData\Local\Packages\SpotifyAB.SpotifyMusic_zpdnekdrzrea0\LocalState\Spotify\Users\d792kbzaa1z84viefr149injq-user\`
 
