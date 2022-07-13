@@ -12,6 +12,8 @@ All this actions is done by this program, have fun =D
 Find your own local files cache path of spotify (below), insert the path into 'SPOTIFY_CACHE_PATH' field
 If your music doesn't in 'Music' folder (C:\Users\Music\) change 'USER_MUSIC_PATH' accroding your local music path.
 
+**ONLY .mp3 SONGS WILL BE UPDATED**
+
 
 # How to find spotify local files cache path
 ### Official version (from spotify.com)
