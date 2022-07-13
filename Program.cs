@@ -8,12 +8,13 @@ namespace SpotifyCacheClean
     internal class Program
     {
         // to edit
-        private const string SPOTIFY_CACHE_PATH = @"NEED TO FILL-UP";
-        private static readonly string userMyMusicPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) + @"\"; // DEFAULT: C:\Users\Music
+        private const string SPOTIFY_CACHE_PATH = @"Fill me";
+        private static readonly string USER_MUSIC_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) + @"\"; // DEFAULT: C:\Users\Music
 
         // not edit
+        private const int WAIT_TIME_MS = 5000; // 5000 / 1000 -> 5 seconds
         private const string SPOTIFY_PROCESS_NAME = "Spotify";
-        private static readonly string userMyMusicTempPath = Path.GetTempPath() + @"SpotifyLocalSongs\";
+        private static readonly string USER_MUSIC_TEMP_PATH = Path.GetTempPath() + @"SpotifyLocalSongs\";
         private static bool error = false;
 
         private static async Task Main(string[] args)
@@ -26,16 +27,16 @@ namespace SpotifyCacheClean
                     WriteLog("Spotify already closed");
 
 
-                if (Directory.Exists(userMyMusicTempPath))
+                if (Directory.Exists(USER_MUSIC_TEMP_PATH))
                 {
-                    Directory.Delete(userMyMusicTempPath, true);
+                    Directory.Delete(USER_MUSIC_TEMP_PATH, true);
                     WriteLog("User music temp folder removed");
                 }
 
-                Directory.CreateDirectory(userMyMusicTempPath);
+                Directory.CreateDirectory(USER_MUSIC_TEMP_PATH);
                 WriteLog("User music temp folder created");
 
-                MoveSongs(userMyMusicPath, userMyMusicTempPath); // music -> temp
+                MoveSongs(USER_MUSIC_PATH, USER_MUSIC_TEMP_PATH); // music -> temp
                 WriteLog("Songs moved to temp folder");
 
                 File.Delete(SPOTIFY_CACHE_PATH + "local-files.bnk");
@@ -44,9 +45,9 @@ namespace SpotifyCacheClean
                 Process.Start(SPOTIFY_PROCESS_NAME + ".exe");
                 WriteLog("Spotify started");
 
-                await Wait(3000); // wait till spotify fully start
+                await Wait(WAIT_TIME_MS); // wait till spotify fully start
 
-                MoveSongs(userMyMusicTempPath, userMyMusicPath); // temp -> music
+                MoveSongs(USER_MUSIC_TEMP_PATH, USER_MUSIC_PATH); // temp -> music
                 WriteLog("Songs restored to music folder");
             }
             catch (Exception e)
