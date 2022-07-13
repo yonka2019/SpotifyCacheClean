@@ -14,7 +14,7 @@ If your music doesn't in 'Music' folder (C:\Users\Music\) change 'USER_MUSIC_PAT
 
 
 # How to find spotify local files cache path
-### Official version (from web)
+### Official version (from spotify.com)
 `C:\Users\*USERNAME*\AppData\Local\Spotify\`
 OR
 `C:\Users\*USERNAME*\AppData\Roaming\Spotify\Users\username-user\`
