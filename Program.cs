@@ -12,6 +12,7 @@ namespace SpotifyCacheClean
         private static readonly string LOCAL_MUSIC_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) + @"\"; // DEFAULT: C:\Users\Music
 
         // not edit
+        private static bool songsMooved = false;
         private const int WAIT_TIME_MS = 5000; // 5000 / 1000 -> 5 seconds
         private const string SPOTIFY_PROCESS_NAME = "Spotify";
         private static readonly string LOCAL_MUSIC_TEMP_PATH = Path.GetTempPath() + @"SpotifyLocalSongs\";
@@ -39,6 +40,9 @@ namespace SpotifyCacheClean
                 MoveSongs(LOCAL_MUSIC_PATH, LOCAL_MUSIC_TEMP_PATH); // music -> temp
                 WriteLog("Songs moved to temp folder");
 
+                if (!Directory.Exists(SPOTIFY_CACHE_PATH))
+                    throw new Exception("Can't find spotify cache path, is the cache path correct? ('SPOTIFY_CACHE_PATH' Field)");
+                
                 File.Delete(SPOTIFY_CACHE_PATH + "local-files.bnk");
                 WriteLog("Spotify cache removed");
 
@@ -55,6 +59,11 @@ namespace SpotifyCacheClean
             {
                 WriteLog("-- ERROR --\n" + e.ToString());
                 error = true;
+                if (songsMooved) // if songs already mooved and program crashed. -> restore data
+                {
+                    MoveSongs(LOCAL_MUSIC_TEMP_PATH, LOCAL_MUSIC_PATH); // temp -> music
+                    WriteLog("Songs restored to original local songs folder, if the songs doesn't appeared, try to fix the error and rerun this utility");
+                }
             }
 
             if (!error)
@@ -85,6 +94,7 @@ namespace SpotifyCacheClean
             {
                 song.MoveTo(toPath + song.Name);
             }
+            songsMooved = true;
         }
 
         private static bool CloseSpotify()
