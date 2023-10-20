@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -7,11 +8,17 @@ namespace SpotifyCacheClean
 {
     internal class Program
     {
-        // to edit
-        private const string SPOTIFY_CACHE_PATH = @"C:\Users\yonka\AppData\Local\Packages\SpotifyAB.SpotifyMusic_zpdnekdrzrea0\LocalState\Spotify\Users\d792kmzau1z83vie5r149injq-user\";  // fill according yours
+        /*
+         * POSSIBLE SPOTIFY-PATH SETTING VALUES:
+         * C:\Users\USER\AppData\Local\Packages\SpotifyAB.SpotifyMusic_USER\LocalState\Spotify
+         * OR
+         * C:\Users\USER\AppData\Roaming\Spotify
+         */
+
+        private static string SpotifyPath;
+        private static string SpotifyCachePath;
         private static readonly string LOCAL_MUSIC_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) + @"\";  // DEFAULT: C:\Users\Music
 
-        // not edit
         private static bool songsMooved = false;
         private const int WAIT_TIME_MS = 5000; // 5000 / 1000 -> 5 seconds
         private const string SPOTIFY_PROCESS_NAME = "Spotify";
@@ -23,8 +30,10 @@ namespace SpotifyCacheClean
         {
             try
             {
+                LoadConfig();
+
                 if (CloseSpotify())
-                    WriteLog(LogType.INFO, "Spotify closed");
+                    WriteLog(LogType.INFO, "Spotify closed successfully");
                 else
                     WriteLog(LogType.INFO, "Spotify already closed");
 
@@ -34,6 +43,8 @@ namespace SpotifyCacheClean
                     Directory.Delete(LOCAL_MUSIC_TEMP_PATH, true);
                     WriteLog(LogType.INFO, "Temp local songs folder removed");
                 }
+                else
+                    throw new Exception("Can't find music folder (probably can't run this program here)");
 
                 Directory.CreateDirectory(LOCAL_MUSIC_TEMP_PATH);
                 WriteLog(LogType.INFO, "Temp local songs folder created");
@@ -41,14 +52,28 @@ namespace SpotifyCacheClean
                 MoveDirectory(LOCAL_MUSIC_PATH, LOCAL_MUSIC_TEMP_PATH); // music -> temp
                 WriteLog(LogType.INFO, "Songs moved to temp folder");
 
-                if (!Directory.Exists(SPOTIFY_CACHE_PATH))
-                    throw new Exception("Can't find spotify cache path, is the cache path correct? ('SPOTIFY_CACHE_PATH' Field)");
+                if (!Directory.Exists(SpotifyCachePath))
+                    throw new Exception("Can't find spotify cache path, is the cache path correct? ('SpotifyPath' Setting in App.config)");
 
-                File.Delete(SPOTIFY_CACHE_PATH + SPOTIFY_CACHE_FILE);
-                WriteLog(LogType.INFO, "Spotify cache removed");
+                string bnkPath = SpotifyCachePath + SPOTIFY_CACHE_FILE;
+                if (File.Exists(bnkPath))
+                {
+                    File.Delete(bnkPath);
+                    WriteLog(LogType.INFO, "Spotify cache file removed");
+                }
+                else
+                    WriteLog(LogType.WARNING, $"Spotify cache file doesn't exist, continuing..");
 
-                Process.Start(SPOTIFY_PROCESS_NAME + ".exe");
-                WriteLog(LogType.INFO, "Spotify started");
+                string spotifyEXE = SpotifyPath + "\\" + SPOTIFY_PROCESS_NAME + ".exe";
+
+                if (File.Exists(spotifyEXE))
+                {
+                    Process.Start(SpotifyPath + "\\" + SPOTIFY_PROCESS_NAME + ".exe");
+                    WriteLog(LogType.INFO, "Spotify started");
+                }
+                else
+                    throw new Exception($"Can't find spotify executable ({spotifyEXE})");
+
 
                 WriteLog(LogType.WARNING, "DO NOT CLOSE THIS WINDOW UNTIL THIS PROCESS FINISHED");
                 await Wait(WAIT_TIME_MS); // wait till spotify fully start
@@ -61,10 +86,11 @@ namespace SpotifyCacheClean
             {
                 WriteLog(LogType.ERROR, e.ToString());
                 error = true;
+
                 if (songsMooved) // if songs already mooved and program crashed. -> restore data
                 {
                     MoveDirectory(LOCAL_MUSIC_TEMP_PATH, LOCAL_MUSIC_PATH); // temp -> music
-                    WriteLog(LogType.INFO, "Songs restored to original local songs folder, if the songs doesn't appeared, try to fix the error and rerun this utility");
+                    WriteLog(LogType.INFO, "Songs restored to original local songs folder, if the songs doesn't appeared, try to fix the error and re-run this utility");
                 }
             }
 
@@ -73,6 +99,19 @@ namespace SpotifyCacheClean
 
             Console.WriteLine("\nPress any button to exit...");
             Console.ReadKey();
+        }
+
+        private static void LoadConfig()
+        {
+            SpotifyPath = ConfigurationManager.AppSettings["SpotifyPath"];
+
+            string usersFolder = SpotifyPath + @"\Users\";
+            string[] dirs = Directory.GetDirectories(usersFolder);
+
+            if (dirs.Length == 0)
+                throw new Exception("Can't find any user in Spotify\\Users\\ folder");
+
+            SpotifyCachePath = dirs[0] + "\\";
         }
 
         private static async Task Wait(int timeToWait)
@@ -116,6 +155,8 @@ namespace SpotifyCacheClean
 
         private static bool CloseSpotify()
         {
+            WriteLog(LogType.INFO, "Closing spotify..");
+
             Process[] processes = Process.GetProcessesByName(SPOTIFY_PROCESS_NAME);
             if (processes.Length == 0)
                 return false;
