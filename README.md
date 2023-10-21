@@ -9,7 +9,13 @@ All this actions is done by this program, have fun =D
 
 
 # How to use
-Find your own local files cache path of spotify (below), insert the path into 'SPOTIFY_CACHE_PATH' field
+Find your own local files cache path of spotify (below), insert the path into 'Spotify-Path' setting in App.config
+examples for Spotify-Path - 
+Basic version - 'C:\Users\USER\AppData\Roaming\Spotify'
+-- OR --
+Microsoft version - 'C:\Users\USER\AppData\Local\Packages\SpotifyAB.SpotifyMusic_zpdnekdrzrea0\LocalState\Spotify`
+
+
 If your music doesn't in 'Music' folder (C:\Users\Music\) change 'USER_MUSIC_PATH' accroding your local music path.
 
 **ONLY .mp3 SONGS WILL BE UPDATED**
