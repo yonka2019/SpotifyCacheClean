@@ -30,6 +30,10 @@ namespace SpotifyCacheClean
         {
             try
             {
+                if (!Directory.Exists(LOCAL_MUSIC_PATH))
+                    throw new Exception("Can't find music folder (probably can't run this program here)");
+
+
                 LoadConfig();
 
                 if (CloseSpotify())
@@ -43,8 +47,6 @@ namespace SpotifyCacheClean
                     Directory.Delete(LOCAL_MUSIC_TEMP_PATH, true);
                     WriteLog(LogType.INFO, "Temp local songs folder removed");
                 }
-                else
-                    throw new Exception("Can't find music folder (probably can't run this program here)");
 
                 Directory.CreateDirectory(LOCAL_MUSIC_TEMP_PATH);
                 WriteLog(LogType.INFO, "Temp local songs folder created");
@@ -63,16 +65,15 @@ namespace SpotifyCacheClean
                 }
                 else
                     WriteLog(LogType.WARNING, $"Spotify cache file doesn't exist, continuing..");
-
-                string spotifyEXE = SpotifyPath + "\\" + SPOTIFY_PROCESS_NAME + ".exe";
-
-                if (File.Exists(spotifyEXE))
+                try
                 {
-                    Process.Start(SpotifyPath + "\\" + SPOTIFY_PROCESS_NAME + ".exe");
+                    Process.Start(SPOTIFY_PROCESS_NAME + ".exe");
                     WriteLog(LogType.INFO, "Spotify started");
                 }
-                else
-                    throw new Exception($"Can't find spotify executable ({spotifyEXE})");
+                catch (Exception e)
+                {
+                    throw new Exception($"Can't find spotify executable ({e})");
+                }
 
 
                 WriteLog(LogType.WARNING, "DO NOT CLOSE THIS WINDOW UNTIL THIS PROCESS FINISHED");
